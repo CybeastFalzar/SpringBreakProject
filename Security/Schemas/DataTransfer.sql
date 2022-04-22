@@ -1,0 +1,3 @@
+CREATE SCHEMA [DataTransfer]
+AUTHORIZATION [dbo]
+GO
