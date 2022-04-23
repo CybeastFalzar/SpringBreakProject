@@ -1,6 +1,6 @@
 CREATE TABLE [Data].[Stock]
 (
-[StockCode] [nvarchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL CONSTRAINT [DF_Stock_StockCode] DEFAULT (newid()),
+[StockCode] [nvarchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL CONSTRAINT [DF_Stock_StockCode] DEFAULT (newid()),
 [ModelID] [smallint] NULL,
 [Cost] [money] NULL,
 [RepairsCost] [money] NULL,
@@ -12,4 +12,6 @@ CREATE TABLE [Data].[Stock]
 [DateBought] [date] NULL,
 [TimeBought] [time] NULL
 ) ON [PRIMARY]
+GO
+ALTER TABLE [Data].[Stock] ADD CONSTRAINT [PK_Stock] PRIMARY KEY CLUSTERED ([StockCode]) ON [PRIMARY]
 GO

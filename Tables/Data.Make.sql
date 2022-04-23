@@ -5,3 +5,5 @@ CREATE TABLE [Data].[Make]
 [MakeCountry] [char] (3) COLLATE SQL_Latin1_General_CP1_CI_AS NULL
 ) ON [PRIMARY]
 GO
+ALTER TABLE [Data].[Make] ADD CONSTRAINT [PK_Make] PRIMARY KEY CLUSTERED ([MakeID]) ON [PRIMARY]
+GO
