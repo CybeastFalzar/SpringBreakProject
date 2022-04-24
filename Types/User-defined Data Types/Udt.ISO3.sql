@@ -1,0 +1,2 @@
+CREATE TYPE [Udt].[ISO3] FROM nchar (3) NULL
+GO
