@@ -1,0 +1,11 @@
+1. To delete Sales2015-2018 created view SalesByYear
+	a. Created TVF GetSalesByYear(int year)
+2. Created SQL Code to rebuild the Reference.Budget table
+	a. Seperated colors by month
+        b. Create TVF for choosing the budget of a certain month in a certain year 	
+           for certain BudgetElements and Details
+	c. Create TVF for finding the yearly budget of each Element
+3. Created SQL code and view for Output.StockPrices
+	a. Create TVF for choosing specifc MakeName and return the cost of all 	   models of that car in stock
+        b. MAYBE create a new column for Condition using CASE
+
