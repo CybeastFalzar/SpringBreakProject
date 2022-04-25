@@ -1,0 +1,12 @@
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_NULLS ON
+GO
+CREATE FUNCTION [Output].[GetPriceOfMake]
+(@MakeName AS NVARCHAR(100)) RETURNS TABLE
+AS
+RETURN
+	SELECT MakeName, ModelName, Cost
+	FROM Output.uvw_StockPrice
+	WHERE MakeName = @MakeName
+GO
