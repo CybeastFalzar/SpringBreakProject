@@ -2,59 +2,16 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_NULLS ON
 GO
-CREATE VIEW [Reference].[uvw_Budget]
+CREATE VIEW [Reference].[ForeignExchange]
 AS
-WITH C1 AS 
-(
-SELECT SUM(SalePrice) AS BudgetValue, YEAR(SaleDate) AS Year, MONTH(SaleDate) AS Month, BudgetDetail = N'TotalSales', BudgetElement = N'Sales'
-FROM Data.SalesByCountry
-GROUP BY YEAR(SaleDate), MONTH(SaleDate)
-),
-C2 AS 
-(
-SELECT SUM(SalePrice) AS BudgetValue, YEAR(SaleDate) AS Year, Month(SaleDate) AS Month, BudgetDetail = Color, BudgetElement = 'Color'
-FROM Data.SalesByCountry
-GROUP BY YEAR(SaleDate), MONTH(SaleDate), Color
-), 
-C3 AS 
-(
-
-SELECT SUM(SalePrice) AS BudgetValue, YEAR(SaleDate) AS Year, MONTH(SaleDate) AS Month, BudgetDetail = CountryName, BudgetElement = 'Country'
-FROM Data.SalesByCountry
-GROUP BY YEAR(SaleDate),
-         MONTH(SaleDate),
-         CountryName
-),
-C4 AS(
-SELECT SUM(SalePrice) AS BudgetValue, YEAR(SaleDate) AS Year, MONTH(SaleDate) AS Month, BudgetDetail = 'USA', BudgetElement = 'Region'
-From Data.SalesByCountry
-Where CountryName = 'United States'
-GROUP BY Year(SaleDate),
-		 Month(SaleDate)
-),
-C5 AS(
-SELECT  SUM(SalePrice) AS BudgetValue,YEAR(SaleDate) AS Year,  MONTH(SaleDate) AS Month,BudgetDetail = 'Europe', BudgetElement = 'Region'
-From Data.SalesByCountry
-Where CountryName = 'France' OR CountryName = 'Spain' OR CountryName = 'Italy' OR CountryName = 'Belgium' OR CountryName = 'Germany' OR CountryName = 'United Kingdom' OR CountryName = 'Switzerland'
-GROUP BY Year(SaleDate),
-		 Month(SaleDate)
-		 
-)
-
-SELECT * 
-FROM C1
-UNION ALL
-SELECT *
-FROM C2
-UNION ALL
-SELECT *
-FROM C3
-UNION ALL
-SELECT *
-FROM C4
-UNION ALL
-SELECT *
-FROM C5
+SELECT        Data.SalesByCountry.SaleDate AS ExchangeDate, 
+                         CASE WHEN CountryName = 'United States' THEN 'USD' WHEN CountryName = 'Belgium' THEN 'EUR' WHEN CountryName = 'France' THEN 'EUR' WHEN CountryName = 'Germany' THEN 'EUR' WHEN CountryName = 'Italy' THEN
+                          'EUR' WHEN CountryName = 'Spain' THEN 'EUR' WHEN CountryName = 'Switzerland' THEN 'CHF' WHEN CountryName = 'United Kingdom' THEN 'GBP' END AS ISOCurrency, YearEx.ExchangeRate
+FROM            Data.SalesByCountry INNER JOIN
+                         Reference.YearlyExchange AS YearEx ON 
+                         YearEx.ISOCurrency = CASE WHEN CountryName = 'United States' THEN 'USD' WHEN CountryName = 'Belgium' THEN 'EUR' WHEN CountryName = 'France' THEN 'EUR' WHEN CountryName = 'Germany' THEN 'EUR' WHEN CountryName
+                          = 'Italy' THEN 'EUR' WHEN CountryName = 'Spain' THEN 'EUR' WHEN CountryName = 'Switzerland' THEN 'CHF' WHEN CountryName = 'United Kingdom' THEN 'GBP' END AND 
+                         YearEx.Year = YEAR(Data.SalesByCountry.SaleDate)
 GO
 EXEC sp_addextendedproperty N'MS_DiagramPane1', N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
 Begin DesignProperties = 
@@ -123,10 +80,30 @@ Begin DesignProperties =
    End
    Begin DiagramPane = 
       Begin Origin = 
-         Top = -576
+         Top = 0
          Left = 0
       End
       Begin Tables = 
+         Begin Table = "SalesByCountry (Data)"
+            Begin Extent = 
+               Top = 6
+               Left = 38
+               Bottom = 136
+               Right = 220
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "YearEx"
+            Begin Extent = 
+               Top = 6
+               Left = 258
+               Bottom = 119
+               Right = 428
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
       End
    End
    Begin SQLPane = 
@@ -164,9 +141,9 @@ Begin DesignProperties =
       End
    End
 End
-', 'SCHEMA', N'Reference', 'VIEW', N'uvw_Budget', NULL, NULL
+', 'SCHEMA', N'Reference', 'VIEW', N'ForeignExchange', NULL, NULL
 GO
 DECLARE @xp int
 SELECT @xp=1
-EXEC sp_addextendedproperty N'MS_DiagramPaneCount', @xp, 'SCHEMA', N'Reference', 'VIEW', N'uvw_Budget', NULL, NULL
+EXEC sp_addextendedproperty N'MS_DiagramPaneCount', @xp, 'SCHEMA', N'Reference', 'VIEW', N'ForeignExchange', NULL, NULL
 GO
