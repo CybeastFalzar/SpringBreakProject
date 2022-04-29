@@ -2,12 +2,10 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_NULLS ON
 GO
-CREATE VIEW [Output].[uvw_StockPrice]
+CREATE VIEW [Reference].[uvw_SalesInPounds]
 AS
-SELECT DISTINCT Make.MakeName, Model.ModelName, FORMAT(ST.Cost, 'c') AS Cost
-FROM            Data.Stock AS ST INNER JOIN
-                         Data.Model AS Model ON Model.ModelID = ST.ModelID INNER JOIN
-                         Data.Make AS Make ON Make.MakeID = Model.MakeID
+SELECT        MakeName, ModelName, FORMAT(SalePrice * 0.8, 'c', 'gd-GB') AS VehicleCost
+FROM            Data.SalesByCountry
 GO
 EXEC sp_addextendedproperty N'MS_DiagramPane1', N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
 Begin DesignProperties = 
@@ -80,32 +78,12 @@ Begin DesignProperties =
          Left = 0
       End
       Begin Tables = 
-         Begin Table = "ST"
-            Begin Extent = 
-               Top = 6
-               Left = 469
-               Bottom = 136
-               Right = 647
-            End
-            DisplayFlags = 280
-            TopColumn = 0
-         End
-         Begin Table = "Model"
-            Begin Extent = 
-               Top = 6
-               Left = 246
-               Bottom = 136
-               Right = 431
-            End
-            DisplayFlags = 280
-            TopColumn = 0
-         End
-         Begin Table = "Make"
+         Begin Table = "SalesByCountry (Data)"
             Begin Extent = 
                Top = 6
                Left = 38
-               Bottom = 119
-               Right = 208
+               Bottom = 136
+               Right = 220
             End
             DisplayFlags = 280
             TopColumn = 0
@@ -147,9 +125,9 @@ Begin DesignProperties =
       End
    End
 End
-', 'SCHEMA', N'Output', 'VIEW', N'uvw_StockPrice', NULL, NULL
+', 'SCHEMA', N'Reference', 'VIEW', N'uvw_SalesInPounds', NULL, NULL
 GO
 DECLARE @xp int
 SELECT @xp=1
-EXEC sp_addextendedproperty N'MS_DiagramPaneCount', @xp, 'SCHEMA', N'Output', 'VIEW', N'uvw_StockPrice', NULL, NULL
+EXEC sp_addextendedproperty N'MS_DiagramPaneCount', @xp, 'SCHEMA', N'Reference', 'VIEW', N'uvw_SalesInPounds', NULL, NULL
 GO
