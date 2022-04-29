@@ -1,0 +1,2 @@
+CREATE TYPE [Udt].[ID] FROM int NOT NULL
+GO
