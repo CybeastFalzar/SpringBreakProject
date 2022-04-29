@@ -1,6 +1,6 @@
 CREATE TABLE [Data].[Stock]
 (
-[StockCode] [nvarchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL CONSTRAINT [DF_Stock_StockCode] DEFAULT (newid()),
+[StockCode] [Udt].[Stock] NOT NULL CONSTRAINT [DF_Stock_StockCode] DEFAULT (newid()),
 [ModelID] [smallint] NULL,
 [Cost] [money] NULL,
 [RepairsCost] [money] NULL,

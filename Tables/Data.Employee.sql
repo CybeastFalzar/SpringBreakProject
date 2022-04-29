@@ -1,8 +1,8 @@
 CREATE TABLE [Data].[Employee]
 (
-[StaffID] [int] NOT NULL IDENTITY(1, 1),
-[StaffName] [nvarchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-[ManagerID] [int] NULL,
-[Department] [nvarchar] (50) COLLATE SQL_Latin1_General_CP1_CI_AS NULL
+[StaffID] [Udt].[ID] NOT NULL IDENTITY(1, 1),
+[StaffName] [Udt].[Name] NULL,
+[ManagerID] [Udt].[Address] NULL,
+[Department] [Udt].[DepartmentName] NULL
 ) ON [PRIMARY]
 GO
