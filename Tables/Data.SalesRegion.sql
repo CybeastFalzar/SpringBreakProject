@@ -4,6 +4,8 @@ CREATE TABLE [Data].[SalesRegion]
 [SalesRegion] [Udt].[SalesRegion] NOT NULL
 ) ON [PRIMARY]
 GO
+ALTER TABLE [Data].[SalesRegion] ADD CONSTRAINT [CK_SalesRegion] CHECK ((NOT [SalesRegion] like '%[^A-Z_ ]%'))
+GO
 ALTER TABLE [Data].[SalesRegion] ADD CONSTRAINT [PK_SalesRegion] PRIMARY KEY CLUSTERED ([SalesRegionId]) ON [PRIMARY]
 GO
 CREATE UNIQUE NONCLUSTERED INDEX [UniqueSalesRegionName_idx] ON [Data].[SalesRegion] ([SalesRegion]) ON [PRIMARY]

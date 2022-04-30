@@ -2,7 +2,13 @@ CREATE TABLE [Data].[Employee]
 (
 [StaffID] [Udt].[ID] NOT NULL IDENTITY(1, 1),
 [StaffName] [Udt].[Name] NULL,
-[ManagerID] [Udt].[Address] NULL,
+[ManagerID] [Udt].[ID] NULL,
 [Department] [Udt].[DepartmentName] NULL
 ) ON [PRIMARY]
+GO
+ALTER TABLE [Data].[Employee] ADD CONSTRAINT [CK_Department] CHECK ((NOT [Department] like '%[^A-Z_ ]%'))
+GO
+ALTER TABLE [Data].[Employee] ADD CONSTRAINT [CK_ManagerID] CHECK ((NOT [StaffName] like '%[0-9]%'))
+GO
+ALTER TABLE [Data].[Employee] ADD CONSTRAINT [CK_StaffName] CHECK ((NOT [StaffName] like '%[^A-Z_ ]%'))
 GO

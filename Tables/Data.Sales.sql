@@ -7,5 +7,9 @@ CREATE TABLE [Data].[Sales]
 [SaleDate] [datetime] NULL
 ) ON [PRIMARY]
 GO
+ALTER TABLE [Data].[Sales] ADD CONSTRAINT [CK_InvoiceNumber] CHECK ((NOT [InvoiceNumber] like '%[^A-Z0-9]%'))
+GO
+ALTER TABLE [Data].[Sales] ADD CONSTRAINT [CK_TotalSalePrice] CHECK ((NOT [TotalSalePrice] like '%[^0-9.]%'))
+GO
 ALTER TABLE [Data].[Sales] ADD CONSTRAINT [PK_Sales] PRIMARY KEY CLUSTERED ([SalesID]) ON [PRIMARY]
 GO
