@@ -12,3 +12,11 @@ ALTER TABLE [Data].[Employee] ADD CONSTRAINT [CK_ManagerID] CHECK ((NOT [StaffNa
 GO
 ALTER TABLE [Data].[Employee] ADD CONSTRAINT [CK_StaffName] CHECK ((NOT [StaffName] like '%[^A-Z_ ]%'))
 GO
+ALTER TABLE [Data].[Employee] ADD CONSTRAINT [PK_Employee] PRIMARY KEY CLUSTERED ([StaffID]) ON [PRIMARY]
+GO
+CREATE NONCLUSTERED INDEX [Department] ON [Data].[Employee] ([Department]) ON [PRIMARY]
+GO
+CREATE NONCLUSTERED INDEX [ManagerID] ON [Data].[Employee] ([ManagerID]) ON [PRIMARY]
+GO
+CREATE NONCLUSTERED INDEX [StaffName] ON [Data].[Employee] ([StaffName]) ON [PRIMARY]
+GO

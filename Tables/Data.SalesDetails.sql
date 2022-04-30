@@ -1,6 +1,6 @@
 CREATE TABLE [Data].[SalesDetails]
 (
-[SalesDetailsID] [Udt].[ID] NULL,
+[SalesDetailsID] [Udt].[ID] NOT NULL,
 [SalesID] [Udt].[ID] NULL,
 [LineItemNumber] [Udt].[LineItem] NULL,
 [StockID] [Udt].[Stock] NULL,
@@ -11,4 +11,6 @@ GO
 ALTER TABLE [Data].[SalesDetails] ADD CONSTRAINT [CK_SalePrice] CHECK ((NOT [SalePrice] like '%[^0-9.]%'))
 GO
 ALTER TABLE [Data].[SalesDetails] ADD CONSTRAINT [CK_Stock] CHECK ((NOT [StockID] like '%[^A-Z0-9-]%'))
+GO
+ALTER TABLE [Data].[SalesDetails] ADD CONSTRAINT [PK_SalesDetails] PRIMARY KEY CLUSTERED ([SalesDetailsID]) ON [PRIMARY]
 GO

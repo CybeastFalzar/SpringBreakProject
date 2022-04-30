@@ -22,3 +22,11 @@ ALTER TABLE [Data].[Customer] ADD CONSTRAINT [CK_Town] CHECK ((NOT [Town] like '
 GO
 ALTER TABLE [Data].[Customer] ADD CONSTRAINT [PK_Customer] PRIMARY KEY CLUSTERED ([CustomerID]) ON [PRIMARY]
 GO
+CREATE UNIQUE NONCLUSTERED INDEX [Address] ON [Data].[Customer] ([Address1]) ON [PRIMARY]
+GO
+CREATE NONCLUSTERED INDEX [Country] ON [Data].[Customer] ([Country]) ON [PRIMARY]
+GO
+CREATE NONCLUSTERED INDEX [UniqueCustomerName] ON [Data].[Customer] ([CustomerName]) ON [PRIMARY]
+GO
+CREATE NONCLUSTERED INDEX [PostCode] ON [Data].[Customer] ([PostCode]) ON [PRIMARY]
+GO

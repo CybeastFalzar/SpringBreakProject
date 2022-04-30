@@ -24,3 +24,7 @@ ALTER TABLE [Data].[Stock] ADD CONSTRAINT [CK_RepairsCost] CHECK ((NOT [RepairsC
 GO
 ALTER TABLE [Data].[Stock] ADD CONSTRAINT [CK_StockCode] CHECK ((NOT [StockCode] like '%[^A-Z0-9-]%'))
 GO
+CREATE NONCLUSTERED INDEX [Colors] ON [Data].[Stock] ([Color]) ON [PRIMARY]
+GO
+CREATE UNIQUE CLUSTERED INDEX [StockCode] ON [Data].[Stock] ([StockCode]) ON [PRIMARY]
+GO
