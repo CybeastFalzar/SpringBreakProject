@@ -2,41 +2,56 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_NULLS ON
 GO
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+CREATE PROCEDURE [Data].[LoadBudget] @UserAuthorizationKey AS INT
+AS
+BEGIN
 
+    -- SET NOCOUNT ON added to prevent extra result sets from
+    -- interfering with SELECT statements.
+    SET NOCOUNT ON;
+
+    DECLARE @StartTime DATETIME2 = SYSDATETIME();
+
+    EXEC ('
 CREATE VIEW [Reference].[uvw_Budget]
 AS
 WITH C1 AS 
 (
-SELECT SUM(SalePrice) AS BudgetValue, YEAR(SaleDate) AS Year, MONTH(SaleDate) AS Month, BudgetDetail = N'TotalSales', BudgetElement = N'Sales'
+SELECT SUM(SalePrice) AS BudgetValue, YEAR(SaleDate) AS Year, MONTH(SaleDate) AS Month, BudgetDetail = N''TotalSales'', BudgetElement = N''Sales''
 FROM Data.SalesByCountry
 GROUP BY YEAR(SaleDate), MONTH(SaleDate)
 ),
 C2 AS 
 (
-SELECT SUM(SalePrice) AS BudgetValue, YEAR(SaleDate) AS Year, Month(SaleDate) AS Month, BudgetDetail = Color, BudgetElement = 'Color'
+SELECT SUM(SalePrice) AS BudgetValue, YEAR(SaleDate) AS Year, Month(SaleDate) AS Month, BudgetDetail = Color, BudgetElement = ''Color''
 FROM Data.SalesByCountry
 GROUP BY YEAR(SaleDate), MONTH(SaleDate), Color
 ), 
 C3 AS 
 (
 
-SELECT SUM(SalePrice) AS BudgetValue, YEAR(SaleDate) AS Year, MONTH(SaleDate) AS Month, BudgetDetail = CountryName, BudgetElement = 'Country'
+SELECT SUM(SalePrice) AS BudgetValue, YEAR(SaleDate) AS Year, MONTH(SaleDate) AS Month, BudgetDetail = CountryName, BudgetElement = ''Country''
 FROM Data.SalesByCountry
 GROUP BY YEAR(SaleDate),
          MONTH(SaleDate),
          CountryName
 ),
 C4 AS(
-SELECT SUM(SalePrice) AS BudgetValue, YEAR(SaleDate) AS Year, MONTH(SaleDate) AS Month, BudgetDetail = 'USA', BudgetElement = 'Region'
+SELECT SUM(SalePrice) AS BudgetValue, YEAR(SaleDate) AS Year, MONTH(SaleDate) AS Month, BudgetDetail = ''USA'', BudgetElement = ''Region''
 From Data.SalesByCountry
-Where CountryName = 'United States'
+Where CountryName = ''United States''
 GROUP BY Year(SaleDate),
 		 Month(SaleDate)
 ),
 C5 AS(
-SELECT  SUM(SalePrice) AS BudgetValue,YEAR(SaleDate) AS Year,  MONTH(SaleDate) AS Month,BudgetDetail = 'Europe', BudgetElement = 'Region'
+SELECT  SUM(SalePrice) AS BudgetValue,YEAR(SaleDate) AS Year,  MONTH(SaleDate) AS Month,BudgetDetail = ''Europe'', BudgetElement = ''Region''
 From Data.SalesByCountry
-Where CountryName = 'France' OR CountryName = 'Spain' OR CountryName = 'Italy' OR CountryName = 'Belgium' OR CountryName = 'Germany' OR CountryName = 'United Kingdom' OR CountryName = 'Switzerland'
+Where CountryName = ''France'' OR CountryName = ''Spain'' OR CountryName = ''Italy'' OR CountryName = ''Belgium'' OR CountryName = ''Germany'' OR CountryName = ''United Kingdom'' OR CountryName = ''Switzerland''
 GROUP BY Year(SaleDate),
 		 Month(SaleDate)
 		 
@@ -57,7 +72,9 @@ UNION ALL
 SELECT *
 FROM C5
 GO
-EXEC sp_addextendedproperty N'MS_DiagramPane1', N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
+ '       );
+    EXEC sys.sp_addextendedproperty @name = N'MS_DiagramPane1',
+                                    @value = N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
 Begin DesignProperties = 
    Begin PaneConfigurations = 
       Begin PaneConfiguration = 0
@@ -165,9 +182,33 @@ Begin DesignProperties =
       End
    End
 End
-', 'SCHEMA', N'Reference', 'VIEW', N'uvw_Budget', NULL, NULL
-GO
-DECLARE @xp int
-SELECT @xp=1
-EXEC sp_addextendedproperty N'MS_DiagramPaneCount', @xp, 'SCHEMA', N'Reference', 'VIEW', N'uvw_Budget', NULL, NULL
+'   ,
+                                    @level0type = N'SCHEMA',
+                                    @level0name = N'Reference',
+                                    @level1type = N'VIEW',
+                                    @level1name = N'uvw_Budget';
+
+
+    EXEC sys.sp_addextendedproperty @name = N'MS_DiagramPaneCount',
+                                    @value = 1,
+                                    @level0type = N'SCHEMA',
+                                    @level0name = N'Reference',
+                                    @level1type = N'VIEW',
+                                    @level1name = N'uvw_Budget';
+
+
+    DECLARE @RowCount INT =
+            (
+                SELECT COUNT(*)FROM Reference.uvw_Budget
+            );
+    DECLARE @EndTime DATETIME2 = SYSDATETIME();
+    EXEC Process.usp_TrackWorkFlow @UserAuthorizationKey = @UserAuthorizationKey,
+                                   @WorkFlowStepDescription = N'Create the Reference.Budget View',
+                                   @WorkFlowStepTableRowCount = @RowCount,
+                                   @StartingDateTime = @StartTime,
+                                   @EndingDateTime = @EndTime;
+
+
+
+END;
 GO

@@ -2,52 +2,29 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_NULLS ON
 GO
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+CREATE PROCEDURE  [Data].[LoadMarketingSalesInPounds] @UserAuthorizationKey AS INT
 
-CREATE VIEW [Reference].[uvw_ForeignExchange]
 AS
-SELECT Data.SalesByCountry.SaleDate AS ExchangeDate,
-       CASE
-           WHEN CountryName = 'United States' THEN
-               'USD'
-           WHEN CountryName = 'Belgium' THEN
-               'EUR'
-           WHEN CountryName = 'France' THEN
-               'EUR'
-           WHEN CountryName = 'Germany' THEN
-               'EUR'
-           WHEN CountryName = 'Italy' THEN
-               'EUR'
-           WHEN CountryName = 'Spain' THEN
-               'EUR'
-           WHEN CountryName = 'Switzerland' THEN
-               'CHF'
-           WHEN CountryName = 'United Kingdom' THEN
-               'GBP'
-       END AS ISOCurrency,
-       YearEx.ExchangeRate
-FROM Data.SalesByCountry
-    INNER JOIN Reference.YearlyExchange AS YearEx
-        ON YearEx.ISOCurrency = CASE
-                                    WHEN CountryName = 'United States' THEN
-                                        'USD'
-                                    WHEN CountryName = 'Belgium' THEN
-                                        'EUR'
-                                    WHEN CountryName = 'France' THEN
-                                        'EUR'
-                                    WHEN CountryName = 'Germany' THEN
-                                        'EUR'
-                                    WHEN CountryName = 'Italy' THEN
-                                        'EUR'
-                                    WHEN CountryName = 'Spain' THEN
-                                        'EUR'
-                                    WHEN CountryName = 'Switzerland' THEN
-                                        'CHF'
-                                    WHEN CountryName = 'United Kingdom' THEN
-                                        'GBP'
-                                END
-           AND YearEx.Year = YEAR(Data.SalesByCountry.SaleDate);
-GO
-EXEC sp_addextendedproperty N'MS_DiagramPane1', N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
+BEGIN
+DECLARE @StartTime DATETIME2 = SYSDATETIME();
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+EXEC('
+CREATE VIEW [Reference].[uvw_SalesInPounds]
+AS
+SELECT MakeName,
+       ModelName,
+       FORMAT(SalePrice * 0.8, ''c'', ''gd-GB'') AS VehicleCost
+FROM Data.SalesByCountry;
+')
+EXEC sys.sp_addextendedproperty @name = N'MS_DiagramPane1',
+                                @value = N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
 Begin DesignProperties = 
    Begin PaneConfigurations = 
       Begin PaneConfiguration = 0
@@ -128,16 +105,6 @@ Begin DesignProperties =
             DisplayFlags = 280
             TopColumn = 0
          End
-         Begin Table = "YearEx"
-            Begin Extent = 
-               Top = 6
-               Left = 258
-               Bottom = 119
-               Right = 428
-            End
-            DisplayFlags = 280
-            TopColumn = 0
-         End
       End
    End
    Begin SQLPane = 
@@ -175,9 +142,31 @@ Begin DesignProperties =
       End
    End
 End
-', 'SCHEMA', N'Reference', 'VIEW', N'uvw_ForeignExchange', NULL, NULL
-GO
-DECLARE @xp int
-SELECT @xp=1
-EXEC sp_addextendedproperty N'MS_DiagramPaneCount', @xp, 'SCHEMA', N'Reference', 'VIEW', N'uvw_ForeignExchange', NULL, NULL
+',
+                                @level0type = N'SCHEMA',
+                                @level0name = N'Reference',
+                                @level1type = N'VIEW',
+                                @level1name = N'uvw_SalesInPounds';
+
+EXEC sys.sp_addextendedproperty @name = N'MS_DiagramPaneCount',
+                                @value = 1,
+                                @level0type = N'SCHEMA',
+                                @level0name = N'Reference',
+                                @level1type = N'VIEW',
+                                @level1name = N'uvw_SalesInPounds';
+
+
+    DECLARE @RowCount INT =
+            (
+                SELECT COUNT(*)FROM Reference.uvw_SalesInPounds
+            );
+    DECLARE @EndTime DATETIME2 = SYSDATETIME();
+    EXEC Process.usp_TrackWorkFlow @UserAuthorizationKey = @UserAuthorizationKey,
+                                   @WorkFlowStepDescription = N'Create the Reference.SalesInPounds View',
+                                   @WorkFlowStepTableRowCount = @RowCount,
+                                   @StartingDateTime = @StartTime,
+                                   @EndingDateTime = @EndTime;
+
+
+END
 GO

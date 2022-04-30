@@ -2,12 +2,18 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_NULLS ON
 GO
+
 CREATE VIEW [Output].[uvw_StockPrice]
 AS
-SELECT DISTINCT Make.MakeName, Model.ModelName, FORMAT(ST.Cost, 'c') AS Cost
-FROM            Data.Stock AS ST INNER JOIN
-                         Data.Model AS Model ON Model.ModelID = ST.ModelID INNER JOIN
-                         Data.Make AS Make ON Make.MakeID = Model.MakeID
+SELECT DISTINCT
+       Make.MakeName,
+       Model.ModelName,
+       FORMAT(ST.Cost, 'c') AS Cost
+FROM Data.Stock AS ST
+    INNER JOIN Data.Model AS Model
+        ON Model.ModelID = ST.ModelID
+    INNER JOIN Data.Make AS Make
+        ON Make.MakeID = Model.MakeID;
 GO
 EXEC sp_addextendedproperty N'MS_DiagramPane1', N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
 Begin DesignProperties = 

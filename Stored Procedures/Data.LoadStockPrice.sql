@@ -2,52 +2,34 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_NULLS ON
 GO
-
-CREATE VIEW [Reference].[uvw_ForeignExchange]
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+CREATE PROCEDURE [Data].[LoadStockPrice] @UserAuthorizationKey AS INT
 AS
-SELECT Data.SalesByCountry.SaleDate AS ExchangeDate,
-       CASE
-           WHEN CountryName = 'United States' THEN
-               'USD'
-           WHEN CountryName = 'Belgium' THEN
-               'EUR'
-           WHEN CountryName = 'France' THEN
-               'EUR'
-           WHEN CountryName = 'Germany' THEN
-               'EUR'
-           WHEN CountryName = 'Italy' THEN
-               'EUR'
-           WHEN CountryName = 'Spain' THEN
-               'EUR'
-           WHEN CountryName = 'Switzerland' THEN
-               'CHF'
-           WHEN CountryName = 'United Kingdom' THEN
-               'GBP'
-       END AS ISOCurrency,
-       YearEx.ExchangeRate
-FROM Data.SalesByCountry
-    INNER JOIN Reference.YearlyExchange AS YearEx
-        ON YearEx.ISOCurrency = CASE
-                                    WHEN CountryName = 'United States' THEN
-                                        'USD'
-                                    WHEN CountryName = 'Belgium' THEN
-                                        'EUR'
-                                    WHEN CountryName = 'France' THEN
-                                        'EUR'
-                                    WHEN CountryName = 'Germany' THEN
-                                        'EUR'
-                                    WHEN CountryName = 'Italy' THEN
-                                        'EUR'
-                                    WHEN CountryName = 'Spain' THEN
-                                        'EUR'
-                                    WHEN CountryName = 'Switzerland' THEN
-                                        'CHF'
-                                    WHEN CountryName = 'United Kingdom' THEN
-                                        'GBP'
-                                END
-           AND YearEx.Year = YEAR(Data.SalesByCountry.SaleDate);
-GO
-EXEC sp_addextendedproperty N'MS_DiagramPane1', N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
+BEGIN
+    -- SET NOCOUNT ON added to prevent extra result sets from
+    -- interfering with SELECT statements.
+    SET NOCOUNT ON;
+    DECLARE @StartTime DATETIME2 = SYSDATETIME();
+    EXEC ('
+CREATE VIEW [Output].[uvw_StockPrice]
+AS
+SELECT DISTINCT
+       Make.MakeName,
+       Model.ModelName,
+       FORMAT(ST.Cost, ''c'') AS Cost
+FROM Data.Stock AS ST
+    INNER JOIN Data.Model AS Model
+        ON Model.ModelID = ST.ModelID
+    INNER JOIN Data.Make AS Make
+        ON Make.MakeID = Model.MakeID;
+'        );
+
+    EXEC sys.sp_addextendedproperty @name = N'MS_DiagramPane1',
+                                    @value = N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
 Begin DesignProperties = 
    Begin PaneConfigurations = 
       Begin PaneConfiguration = 0
@@ -118,22 +100,32 @@ Begin DesignProperties =
          Left = 0
       End
       Begin Tables = 
-         Begin Table = "SalesByCountry (Data)"
+         Begin Table = "ST"
             Begin Extent = 
                Top = 6
-               Left = 38
+               Left = 469
                Bottom = 136
-               Right = 220
+               Right = 647
             End
             DisplayFlags = 280
             TopColumn = 0
          End
-         Begin Table = "YearEx"
+         Begin Table = "Model"
             Begin Extent = 
                Top = 6
-               Left = 258
+               Left = 246
+               Bottom = 136
+               Right = 431
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "Make"
+            Begin Extent = 
+               Top = 6
+               Left = 38
                Bottom = 119
-               Right = 428
+               Right = 208
             End
             DisplayFlags = 280
             TopColumn = 0
@@ -175,9 +167,32 @@ Begin DesignProperties =
       End
    End
 End
-', 'SCHEMA', N'Reference', 'VIEW', N'uvw_ForeignExchange', NULL, NULL
-GO
-DECLARE @xp int
-SELECT @xp=1
-EXEC sp_addextendedproperty N'MS_DiagramPaneCount', @xp, 'SCHEMA', N'Reference', 'VIEW', N'uvw_ForeignExchange', NULL, NULL
+'   ,
+                                    @level0type = N'SCHEMA',
+                                    @level0name = N'Output',
+                                    @level1type = N'VIEW',
+                                    @level1name = N'uvw_StockPrice';
+
+    EXEC sys.sp_addextendedproperty @name = N'MS_DiagramPaneCount',
+                                    @value = 1,
+                                    @level0type = N'SCHEMA',
+                                    @level0name = N'Output',
+                                    @level1type = N'VIEW',
+                                    @level1name = N'uvw_StockPrice';
+
+
+
+ DECLARE @RowCount INT =
+            (
+                SELECT COUNT(*)FROM Output.uvw_StockPrice
+            );
+    DECLARE @EndTime DATETIME2 = SYSDATETIME();
+    EXEC Process.usp_TrackWorkFlow @UserAuthorizationKey = @UserAuthorizationKey,
+                                   @WorkFlowStepDescription = N'Create the Output.uvw_StockPrice View',
+                                   @WorkFlowStepTableRowCount = @RowCount,
+                                   @StartingDateTime = @StartTime,
+                                   @EndingDateTime = @EndTime;
+
+
+END;
 GO

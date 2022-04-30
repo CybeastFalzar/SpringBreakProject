@@ -2,10 +2,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_NULLS ON
 GO
+
 CREATE VIEW [Reference].[uvw_SalesInPounds]
 AS
-SELECT        MakeName, ModelName, FORMAT(SalePrice * 0.8, 'c', 'gd-GB') AS VehicleCost
-FROM            Data.SalesByCountry
+SELECT MakeName,
+       ModelName,
+       FORMAT(SalePrice * 0.8, 'c', 'gd-GB') AS VehicleCost
+FROM Data.SalesByCountry;
 GO
 EXEC sp_addextendedproperty N'MS_DiagramPane1', N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
 Begin DesignProperties = 
