@@ -15,3 +15,7 @@ ALTER TABLE [Data].[Sales] ADD CONSTRAINT [PK_Sales] PRIMARY KEY CLUSTERED ([Sal
 GO
 CREATE UNIQUE NONCLUSTERED INDEX [InvoiceNumber] ON [Data].[Sales] ([InvoiceNumber]) ON [PRIMARY]
 GO
+CREATE NONCLUSTERED INDEX [SaleDate] ON [Data].[Sales] ([SaleDate]) ON [PRIMARY]
+GO
+CREATE NONCLUSTERED INDEX [TotalSalePrice] ON [Data].[Sales] ([TotalSalePrice]) ON [PRIMARY]
+GO

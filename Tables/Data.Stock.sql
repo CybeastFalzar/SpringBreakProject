@@ -1,6 +1,6 @@
 CREATE TABLE [Data].[Stock]
 (
-[StockCode] [Udt].[Stock] NULL CONSTRAINT [DF_Stock_StockCode] DEFAULT (newid()),
+[StockCode] [Udt].[Stock] NOT NULL CONSTRAINT [DF_Stock_StockCode] DEFAULT (newid()),
 [ModelID] [Udt].[ID] NULL,
 [Cost] [Udt].[Price] NULL,
 [RepairsCost] [Udt].[Price] NULL,
@@ -24,7 +24,11 @@ ALTER TABLE [Data].[Stock] ADD CONSTRAINT [CK_RepairsCost] CHECK ((NOT [RepairsC
 GO
 ALTER TABLE [Data].[Stock] ADD CONSTRAINT [CK_StockCode] CHECK ((NOT [StockCode] like '%[^A-Z0-9-]%'))
 GO
+ALTER TABLE [Data].[Stock] ADD CONSTRAINT [PK_Stock] PRIMARY KEY NONCLUSTERED ([StockCode]) ON [PRIMARY]
+GO
 CREATE NONCLUSTERED INDEX [Colors] ON [Data].[Stock] ([Color]) ON [PRIMARY]
+GO
+CREATE NONCLUSTERED INDEX [Cost] ON [Data].[Stock] ([Cost], [RepairsCost], [PartsCost], [TransportInCost]) ON [PRIMARY]
 GO
 CREATE UNIQUE CLUSTERED INDEX [StockCode] ON [Data].[Stock] ([StockCode]) ON [PRIMARY]
 GO

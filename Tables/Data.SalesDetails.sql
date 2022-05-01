@@ -14,3 +14,9 @@ ALTER TABLE [Data].[SalesDetails] ADD CONSTRAINT [CK_Stock] CHECK ((NOT [StockID
 GO
 ALTER TABLE [Data].[SalesDetails] ADD CONSTRAINT [PK_SalesDetails] PRIMARY KEY CLUSTERED ([SalesDetailsID]) ON [PRIMARY]
 GO
+CREATE NONCLUSTERED INDEX [LineItemDiscount] ON [Data].[SalesDetails] ([LineItemDiscount]) ON [PRIMARY]
+GO
+CREATE NONCLUSTERED INDEX [SalePrice] ON [Data].[SalesDetails] ([SalePrice]) ON [PRIMARY]
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [StockID] ON [Data].[SalesDetails] ([StockID]) ON [PRIMARY]
+GO

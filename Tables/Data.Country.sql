@@ -1,6 +1,6 @@
 CREATE TABLE [Data].[Country]
 (
-[CountryName] [Udt].[CountryName] NULL,
+[CountryName] [Udt].[CountryName] NOT NULL,
 [CountryISO2] [Udt].[ISO2] NULL,
 [CountryISO3] [Udt].[ISO3] NULL,
 [SalesRegion] [Udt].[ID] NULL
@@ -11,6 +11,8 @@ GO
 ALTER TABLE [Data].[Country] ADD CONSTRAINT [CK_CountryISo3] CHECK ((len([CountryISO3])=(3)))
 GO
 ALTER TABLE [Data].[Country] ADD CONSTRAINT [CK_CountryName] CHECK ((NOT [CountryName] like '%[^A-Z_ ]%'))
+GO
+ALTER TABLE [Data].[Country] ADD CONSTRAINT [PK_Country] PRIMARY KEY CLUSTERED ([CountryName]) ON [PRIMARY]
 GO
 CREATE NONCLUSTERED INDEX [UniqueCoutryNameISO2_idx] ON [Data].[Country] ([CountryISO2]) ON [PRIMARY]
 GO

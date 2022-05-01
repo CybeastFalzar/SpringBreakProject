@@ -3,7 +3,7 @@ CREATE TABLE [Data].[Employee]
 [StaffID] [Udt].[ID] NOT NULL IDENTITY(1, 1),
 [StaffName] [Udt].[Name] NULL,
 [ManagerID] [Udt].[ID] NULL,
-[Department] [Udt].[DepartmentName] NULL
+[Department] [Udt].[DepartmentName] NULL CONSTRAINT [DF_Employee_Department] DEFAULT ('No Department')
 ) ON [PRIMARY]
 GO
 ALTER TABLE [Data].[Employee] ADD CONSTRAINT [CK_Department] CHECK ((NOT [Department] like '%[^A-Z_ ]%'))
