@@ -20,3 +20,5 @@ CREATE NONCLUSTERED INDEX [SalePrice] ON [Data].[SalesDetails] ([SalePrice]) ON 
 GO
 CREATE UNIQUE NONCLUSTERED INDEX [StockID] ON [Data].[SalesDetails] ([StockID]) ON [PRIMARY]
 GO
+ALTER TABLE [Data].[SalesDetails] ADD CONSTRAINT [FK_SalesDetails_Sales] FOREIGN KEY ([SalesID]) REFERENCES [Data].[Sales] ([SalesID])
+GO

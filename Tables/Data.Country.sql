@@ -3,7 +3,7 @@ CREATE TABLE [Data].[Country]
 [CountryName] [Udt].[CountryName] NOT NULL,
 [CountryISO2] [Udt].[ISO2] NULL,
 [CountryISO3] [Udt].[ISO3] NULL,
-[SalesRegion] [Udt].[ID] NULL
+[SalesRegion] [Udt].[SalesRegion] NULL
 ) ON [PRIMARY]
 GO
 ALTER TABLE [Data].[Country] ADD CONSTRAINT [CK_CountryISO2] CHECK ((len([CountryISO2])=(2)))

@@ -19,3 +19,5 @@ CREATE NONCLUSTERED INDEX [SaleDate] ON [Data].[Sales] ([SaleDate]) ON [PRIMARY]
 GO
 CREATE NONCLUSTERED INDEX [TotalSalePrice] ON [Data].[Sales] ([TotalSalePrice]) ON [PRIMARY]
 GO
+ALTER TABLE [Data].[Sales] ADD CONSTRAINT [FK_Sales_Customer] FOREIGN KEY ([CustomerID]) REFERENCES [Data].[Customer] ([CustomerID])
+GO
